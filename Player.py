@@ -1,6 +1,7 @@
 from Playground import Playground
 from enums.Direction import Direction
 from enums.PlaygroundTile import PlaygroundTile
+from enums.Message import Message
 
 
 class Player:
@@ -20,6 +21,9 @@ class Player:
 
             self.playground.setTile(height, width, PlaygroundTile.SNAKE)
 
+    """
+    :returns hasEaten 
+    """
     def feed(self):
         if self.playground.getFoodPosition() == self.playerPositions[0]:
             self.draw()
@@ -28,12 +32,18 @@ class Player:
 
         return False
 
+    """
+    :returns hasEatenSelf
+    """
     def hasEatenSelf(self):
         if self.playerPositions[0] in self.playerPositions[1:]:
             return True
 
         return False
 
+    """
+    :returns hasWon
+    """
     def move(self):
         newHeight = self.playerPositions[0][0]
         newWidth = self.playerPositions[0][1]
@@ -56,24 +66,30 @@ class Player:
 
         self.playerPositions.insert(0, (newHeight, newWidth))
 
-        feed = self.feed()
-        hasEatenSelf = self.hasEatenSelf()
-
-        if hasEatenSelf:
-            return False
-
-        if feed:
-            return True
+        if self.checkForWin()[1] is not None:
+            return self.checkForWin()[0]
 
         if len(self.playerPositions) > 0:
             removedTile = self.playerPositions.pop()
             self.playground.setTile(removedTile[0], removedTile[1], PlaygroundTile.VOID)
             self.draw()
 
-        if self.playground.isPlaygroundFull():
-            return True
-
         return False
+
+    """
+    :returns hasWon, Message -> Nur gewonnen wenn Message != None ist
+    """
+    def checkForWin(self):
+        if self.hasEatenSelf():
+            return False, Message.EATEN_SELF
+
+        if self.feed():
+            return True, Message.FEED
+
+        if self.playground.isPlaygroundFull():
+            return True, Message.PLAYGROUND_FULL
+
+        return False, Message.NONE
 
     def getCurrentDirection(self):
         return self.__currentMovingDirection
