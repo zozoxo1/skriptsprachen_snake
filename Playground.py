@@ -5,12 +5,15 @@ from enums.PlaygroundTile import PlaygroundTile
 
 class Playground:
 
-    def __init__(self, height, width):
-        self.height = height
-        self.width = width
+    def __init__(self, height: int, width: int):
+        self.width = width if width > 8 else 10
+        self.height = height if height > 8 else 10
 
         self.__playground = [[PlaygroundTile.VOID for _ in range(width)] for _ in range(height)]
         self.__currentFoodPosition = (0, 0)
+
+    def getFoodPosition(self):
+        return self.__currentFoodPosition
 
     def getPlaygroundMatrix(self):
         return self.__playground
@@ -51,7 +54,7 @@ class Playground:
         randomWidth = random.randint(0, self.width - 1)
         randomHeight = random.randint(0, self.height - 1)
 
-        while self.__playground[randomHeight][randomWidth] != PlaygroundTile.VOID:
+        while self.__playground[randomHeight - 1][randomWidth - 1] != PlaygroundTile.VOID:
             randomWidth = random.randint(0, self.width)
             randomHeight = random.randint(0, self.height)
 

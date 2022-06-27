@@ -5,7 +5,6 @@ import sys
 from pandas import *
 
 game = SnakeGame(20, 20)
-game.playground.setTile(1, 5, PlaygroundTile.SNAKE)
 game.playground.setRandomFood()
 matrix = game.playground.getPlaygroundMatrix()
 
@@ -17,7 +16,12 @@ display = pygame.display.set_mode((len(matrix) * 20,
 clock = pygame.time.Clock()
 dt = 0
 
+MOVEEVENT = pygame.USEREVENT + 1
+wieoft = int(1000 / 10)
+pygame.time.set_timer(MOVEEVENT, wieoft)
+
 while True:
+    clock.tick(60)
     display.fill((255, 255, 255))
 
     for row in range(len(matrix)):
@@ -35,18 +39,24 @@ while True:
             pygame.quit()
             sys.exit()
 
+        if event.type == MOVEEVENT:
+            m = game.player.move()
+
+            if not m:
+                if game.player.hasEatenSelf():
+                    game.gameOver(win=False)
+            else:
+                if game.playground.isPlaygroundFull():
+                    game.gameOver(win=True)
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
-                game.player.moveUp()
+                game.player.setDirectionUp()
             if event.key == pygame.K_s:
-                game.player.moveDown()
+                game.player.setDirectionDown()
             if event.key == pygame.K_a:
-                game.player.moveLeft()
+                game.player.setDirectionLeft()
             if event.key == pygame.K_d:
-                game.player.moveRight()
-
-    game.player.move()
+                game.player.setDirectionRight()
 
     pygame.display.update()
-
-    dt = clock.tick(5)

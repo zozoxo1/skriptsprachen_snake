@@ -4,23 +4,25 @@ from Playground import Playground
 
 class SnakeGame:
 
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
+    def __init__(self, width: int, height: int):
+        self.width = width if width > 8 else 10
+        self.height = height if height > 8 else 10
 
         self.playground = Playground(width, height)
         self.player = Player(self.playground)
-        pass
+
+        self.__gameStarted = False
+        self.__gamePaused = False
 
     def startGame(self):
-        pass
+        self.__gameStarted = True
 
     def stopGame(self):
-        pass
+        self.__gameStarted = False
 
-    def pauseGame(self):
-        pass
+    def pauseGame(self, paused: bool):
+        self.__gamePaused = paused
 
-    def gameOver(self):
-        pass
+    def gameOver(self, win: bool):
+        exit(0)
 
