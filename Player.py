@@ -12,7 +12,8 @@ class Player:
 
         self.playground = playground
         self.playerPositions.append((int(self.playground.height / 2), int(self.playground.width / 2)))
-        self.playerPositions.append((int(self.playground.height / 2 - 1), int(self.playground.width / 2)))
+        self.playerPositions.append((int(self.playground.height / 2), int(self.playground.width / 2 - 1)))
+        self.setPlayerPositionTiles()
 
         self.__currentMovingDirection = Direction.RIGHT
         self.__allowDirectionInputs = True

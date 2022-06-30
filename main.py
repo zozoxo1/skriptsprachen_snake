@@ -2,10 +2,8 @@ from SnakeGame import SnakeGame
 from enums.PlaygroundTile import PlaygroundTile
 import pygame
 import sys
-from pandas import *
 
-game = SnakeGame(5, 5)
-game.playground.setRandomFood()
+game = SnakeGame(20, 20)
 game.startGame()
 matrix = game.playground.getPlaygroundMatrix()
 
@@ -17,7 +15,7 @@ clock = pygame.time.Clock()
 dt = 0
 
 MOVEEVENT = pygame.USEREVENT + 1
-wieoft = int(1000 / 2)
+wieoft = int(1000 / 7)
 pygame.time.set_timer(MOVEEVENT, wieoft)
 
 

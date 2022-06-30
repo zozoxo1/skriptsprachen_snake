@@ -24,6 +24,7 @@ class SnakeGame:
 
     def startGame(self):
         self.setGameStatus(GameStatus.RUNNING)
+        self.playground.setRandomFood()
 
     def pauseGame(self):
         if self.getGameStatus() != GameStatus.PAUSED:
