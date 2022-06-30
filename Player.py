@@ -20,36 +20,27 @@ class Player:
     def resetPlayer(self):
         self.__init__(self.playground)
 
-    def draw(self):
+    def setPlayerPositionTiles(self):
         for i in self.playerPositions:
             height = i[0]
             width = i[1]
 
             self.playground.setTile(height, width, PlaygroundTile.SNAKE)
 
-    """
-    :returns hasEaten 
-    """
     def feed(self):
         if self.playground.getFoodPosition() == self.playerPositions[0]:
-            self.draw()
+            self.setPlayerPositionTiles()
             self.playground.setRandomFood()
             return True
 
         return False
 
-    """
-    :returns hasEatenSelf
-    """
     def hasEatenSelf(self):
         if self.playerPositions[0] in self.playerPositions[1:]:
             return True
 
         return False
 
-    """
-    :returns hasWon
-    """
     def move(self):
         newHeight = self.playerPositions[0][0]
         newWidth = self.playerPositions[0][1]
@@ -83,7 +74,7 @@ class Player:
             self.playground.setTile(removedTile[0], removedTile[1], PlaygroundTile.VOID)
 
         self.__allowDirectionInputs = True
-        self.draw()
+        self.setPlayerPositionTiles()
 
         return False
 
