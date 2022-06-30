@@ -1,3 +1,4 @@
+from Logger import Logger
 from Playground import Playground
 from enums.Direction import Direction
 from enums.PlaygroundTile import PlaygroundTile
@@ -12,7 +13,12 @@ class Player:
         self.playground = playground
         self.playerPositions.append((int(self.playground.height / 2), int(self.playground.width / 2)))
         self.playerPositions.append((int(self.playground.height / 2 - 1), int(self.playground.width / 2)))
+
         self.__currentMovingDirection = Direction.RIGHT
+        self.__allowDirectionInputs = True
+
+    def resetPlayer(self):
+        self.__init__(self.playground)
 
     def draw(self):
         for i in self.playerPositions:
@@ -66,54 +72,71 @@ class Player:
 
         self.playerPositions.insert(0, (newHeight, newWidth))
 
-        if self.checkForWin()[1] is not None:
-            return self.checkForWin()[0]
+        action = self.checkForAction()
+        if action is not Message.NONE:
+            Logger.log(f"Action: {action.name}")
+            self.__allowDirectionInputs = True
+            return True
 
         if len(self.playerPositions) > 0:
             removedTile = self.playerPositions.pop()
             self.playground.setTile(removedTile[0], removedTile[1], PlaygroundTile.VOID)
-            self.draw()
+
+        self.__allowDirectionInputs = True
+        self.draw()
 
         return False
 
     """
     :returns hasWon, Message -> Nur gewonnen wenn Message != None ist
     """
-    def checkForWin(self):
-        if self.hasEatenSelf():
-            return False, Message.EATEN_SELF
+    def checkForAction(self):
+        if self.playground.isPlaygroundFull():
+            return Message.PLAYGROUND_FULL
 
         if self.feed():
-            return True, Message.FEED
+            return Message.FEED
 
-        if self.playground.isPlaygroundFull():
-            return True, Message.PLAYGROUND_FULL
+        if self.hasEatenSelf():
+            return Message.EATEN_SELF
 
-        return False, Message.NONE
+        return Message.NONE
 
     def getCurrentDirection(self):
         return self.__currentMovingDirection
 
     def setDirectionDown(self):
-        self.__currentMovingDirection = \
-            Direction.DOWN \
-                if self.__currentMovingDirection != Direction.UP \
-                else Direction.UP
+        if not self.__allowDirectionInputs:
+            return
+
+        self.__allowDirectionInputs = False
+
+        self.__currentMovingDirection = Direction.DOWN if self.__currentMovingDirection != Direction.UP \
+            else Direction.UP
 
     def setDirectionUp(self):
-        self.__currentMovingDirection = \
-            Direction.UP \
-                if self.__currentMovingDirection != Direction.DOWN \
-                else Direction.DOWN
+        if not self.__allowDirectionInputs:
+            return
+
+        self.__allowDirectionInputs = False
+
+        self.__currentMovingDirection = Direction.UP if self.__currentMovingDirection != Direction.DOWN \
+            else Direction.DOWN
 
     def setDirectionRight(self):
-        self.__currentMovingDirection = \
-            Direction.RIGHT \
-                if self.__currentMovingDirection != Direction.LEFT \
-                else Direction.LEFT
+        if not self.__allowDirectionInputs:
+            return
+
+        self.__allowDirectionInputs = False
+
+        self.__currentMovingDirection = Direction.RIGHT if self.__currentMovingDirection != Direction.LEFT \
+            else Direction.LEFT
 
     def setDirectionLeft(self):
-        self.__currentMovingDirection = \
-            Direction.LEFT \
-                if self.__currentMovingDirection != Direction.RIGHT \
-                else Direction.RIGHT
+        if not self.__allowDirectionInputs:
+            return
+
+        self.__allowDirectionInputs = False
+
+        self.__currentMovingDirection = Direction.LEFT if self.__currentMovingDirection != Direction.RIGHT \
+            else Direction.RIGHT

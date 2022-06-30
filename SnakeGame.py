@@ -1,5 +1,7 @@
+from Logger import Logger
 from Player import Player
 from Playground import Playground
+from enums.GameStatus import GameStatus
 
 
 class SnakeGame:
@@ -8,21 +10,55 @@ class SnakeGame:
         self.width = width if width > 8 else 10
         self.height = height if height > 8 else 10
 
-        self.playground = Playground(width, height)
+        self.playground = Playground(self.height, self.width)
         self.player = Player(self.playground)
 
-        self.__gameStarted = False
-        self.__gamePaused = False
+        self.__gameStatus = GameStatus.WAITING_FOR_NEXT_PLAYER
+
+    def setGameStatus(self, gameStatus: GameStatus):
+        self.__gameStatus = gameStatus
+        Logger.log(f"Game Status wurde geändert: {gameStatus.name}")
+
+    def getGameStatus(self):
+        return self.__gameStatus
 
     def startGame(self):
-        self.__gameStarted = True
+        self.setGameStatus(GameStatus.RUNNING)
+
+    def pauseGame(self):
+        if self.getGameStatus() != GameStatus.PAUSED:
+            self.setGameStatus(GameStatus.PAUSED)
+        else:
+            self.setGameStatus(GameStatus.RUNNING)
 
     def stopGame(self):
-        self.__gameStarted = False
+        self.setGameStatus(GameStatus.STOPPED)
 
-    def pauseGame(self, paused: bool):
-        self.__gamePaused = paused
+    def isGameRunning(self):
+        return self.getGameStatus() == GameStatus.RUNNING
+
+    def resetGame(self):
+
+        self.setGameStatus(GameStatus.RESETTING)
+
+        self.playground.resetPlayground()
+        self.player.resetPlayer()
+
+        self.setGameStatus(GameStatus.WAITING_FOR_NEXT_PLAYER)
 
     def gameOver(self, win: bool):
-        exit(0)
+        self.setGameStatus(GameStatus.GAME_OVER)
+        Logger.log("Game Over!")
 
+        return win
+
+    def performGameOverCheck(self):
+        if self.player.hasEatenSelf():
+            self.gameOver(win=False)
+            self.resetGame()
+            self.startGame()
+
+        if self.playground.isPlaygroundFull():
+            self.gameOver(win=True)
+            self.resetGame()
+            self.startGame()
