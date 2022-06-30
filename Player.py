@@ -79,9 +79,6 @@ class Player:
 
         return False
 
-    """
-    :returns hasWon, Message -> Nur gewonnen wenn Message != None ist
-    """
     def checkForAction(self):
         if self.playground.isPlaygroundFull():
             return Message.PLAYGROUND_FULL
