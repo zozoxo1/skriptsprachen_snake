@@ -42,6 +42,14 @@ class Player:
 
         return False
 
+    def hasHitWall(self):
+
+        playerPos = self.playerPositions[0]
+        if self.playground.getPlaygroundMatrix()[playerPos[0]][playerPos[1]] == PlaygroundTile.WALL:
+            return True
+
+        return False
+
     def move(self):
         newHeight = self.playerPositions[0][0]
         newWidth = self.playerPositions[0][1]
@@ -88,6 +96,9 @@ class Player:
 
         if self.hasEatenSelf():
             return Message.EATEN_SELF
+
+        if self.hasHitWall():
+            return Message.HIT_WALL
 
         return Message.NONE
 

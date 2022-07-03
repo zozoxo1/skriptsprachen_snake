@@ -6,4 +6,5 @@ class PlaygroundTile(Enum):
     SNAKE = 2
     FOOD = 3
     TEXT = 4
+    WALL = 5
 

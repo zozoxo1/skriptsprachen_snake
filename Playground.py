@@ -12,6 +12,9 @@ class Playground:
         self.__playground = [[PlaygroundTile.VOID for _ in range(self.width)] for _ in range(self.height)]
         self.__currentFoodPosition = (-1, -1)  # (height, width)
 
+        for k in range(3, self.width - 1):
+            self.setTile(2, k, PlaygroundTile.WALL)
+
     def resetPlayground(self):
         self.__init__(self.height, self.width)
 

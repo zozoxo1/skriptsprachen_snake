@@ -31,6 +31,8 @@ def draw(matrix):
                 pygame.draw.rect(display, (255, 4, 21), (col * 20, row * 20, col * 20 + 20, row * 20 + 20))
             elif matrix[row][col] == PlaygroundTile.TEXT:
                 pygame.draw.rect(display, (255, 255, 255), (col * 20, row * 20, col * 20 + 20, row * 20 + 20))
+            elif matrix[row][col] == PlaygroundTile.WALL:
+                pygame.draw.rect(display, (255, 255, 255), (col * 20, row * 20, col * 20 + 20, row * 20 + 20))
 
 
 while True:

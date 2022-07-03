@@ -8,3 +8,8 @@ Snake
   - [ ] Player move methode
   - [ ] funktionen private machen wenn sie nicht gebraucht werden
 - [ ] how to use als kommentar für funktionen
+- [ ] wände als level
+- [ ] wände anders setzen
+
+
+- [ ] admin seite für game auswahl

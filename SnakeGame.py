@@ -59,6 +59,11 @@ class SnakeGame:
             self.resetGame()
             self.startGame()
 
+        if self.player.hasHitWall():
+            self.gameOver(win=False)
+            self.resetGame()
+            self.startGame()
+
         if self.playground.isPlaygroundFull():
             self.gameOver(win=True)
             self.resetGame()
