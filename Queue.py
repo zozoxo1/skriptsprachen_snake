@@ -1,9 +1,8 @@
-class Text:
+class Queue:
 
     # TODO: implement
     def __init__(self):
         pass
 
-    def drawText(self, text: str):
+    def next(self):
         pass
-

@@ -66,3 +66,7 @@ while True:
     draw(matrix)
 
     pygame.display.update()
+
+
+# TODO: make functions of classes private if not needed elsewhere
+
