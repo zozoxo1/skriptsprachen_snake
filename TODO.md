@@ -10,7 +10,7 @@ Snake
 - [ ] how to use als kommentar für funktionen
 - [ ] wände als level
 - [ ] wände anders setzen
-- [ ] status setzen auf WAITING_FOR_PLAYER_TO_START wenn in queue
+- [x] status setzen auf WAITING_FOR_PLAYER_TO_START wenn in queue
 - [ ] score einbauen
 
 
