@@ -1,6 +1,7 @@
 from Logger import Logger
 from Player import Player
 from Playground import Playground
+from Queue import Queue
 from enums.GameStatus import GameStatus
 from enums.Message import Message
 
@@ -21,6 +22,7 @@ class SnakeGame:
 
         self.playground = Playground(self.height, self.width)
         self.player = Player(self.playground)
+        self.queue = Queue(self)
 
         self.__gameStatus = GameStatus.WAITING_FOR_NEXT_PLAYER
 
