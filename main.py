@@ -3,7 +3,7 @@ from enums.PlaygroundTile import PlaygroundTile
 import pygame
 import sys
 
-game = SnakeGame(20, 20)
+game = SnakeGame(10, 10)
 game.startGame()
 matrix = game.playground.getPlaygroundMatrix()
 

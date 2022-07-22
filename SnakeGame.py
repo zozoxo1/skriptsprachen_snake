@@ -117,8 +117,13 @@ class SnakeGame:
 
         self.setGameStatus(GameStatus.GAME_OVER)
         Logger.log("Game Over!")
+        self.queue.nextPlayer()
 
         return win
+
+    def surrenderGame(self):
+        self.gameOver(False, Message.SURRENDER)
+        self.resetGame()
 
     def performGameOverCheck(self):
         """

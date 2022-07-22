@@ -7,4 +7,5 @@ class Message(Enum):
     FEED = "feed"
     HIT_WALL = "hit wall"
     NONE = None
+    SURRENDER = "surrendered"
 
