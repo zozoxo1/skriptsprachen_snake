@@ -4,7 +4,7 @@ from enums.Prefix import Prefix
 class Logger:
 
     @staticmethod
-    def log(message: str, prefix: Prefix = Prefix.SNAKE):
+    def log(message: str, prefix: Prefix = Prefix.SNAKE) -> None:
         """
         Log function which will print a given string to the console.
         Given string is concatenated with a Snake prefix.

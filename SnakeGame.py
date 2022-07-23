@@ -8,7 +8,7 @@ from enums.Message import Message
 
 class SnakeGame:
 
-    def __init__(self, height: int, width: int):
+    def __init__(self, height: int, width: int) -> None:
         """
         Snake constructor to initialise playground dimensions, player and playground.
         Sets game state default to WAITING_FOR_NEXT_PLAYER
@@ -17,26 +17,26 @@ class SnakeGame:
         :param width: width of playground
         """
 
-        self.width = width if width > 8 else 10
-        self.height = height if height > 8 else 10
+        self.width: int = width if width > 8 else 10
+        self.height: int = height if height > 8 else 10
 
-        self.playground = Playground(self.height, self.width)
-        self.player = Player(self.playground)
-        self.queue = Queue(self)
+        self.playground: Playground = Playground(self.height, self.width)
+        self.player: Player = Player(self.playground)
+        self.queue: Queue = Queue(self)
 
-        self.__gameStatus = GameStatus.WAITING_FOR_NEXT_PLAYER
+        self.__gameStatus: GameStatus = GameStatus.WAITING_FOR_NEXT_PLAYER
 
-    def setGameStatus(self, gameStatus: GameStatus):
+    def setGameStatus(self, gameStatus: GameStatus) -> None:
         """
         Function to set new game status.
 
         :param gameStatus: new game state
         """
 
-        self.__gameStatus = gameStatus
+        self.__gameStatus: GameStatus = gameStatus
         Logger.log(f"Game Status wurde geändert: {gameStatus.name}")
 
-    def getGameStatus(self):
+    def getGameStatus(self) -> GameStatus:
         """
         Function get get current game status
 
@@ -46,7 +46,7 @@ class SnakeGame:
 
         return self.__gameStatus
 
-    def startGame(self):
+    def startGame(self) -> None:
         """
         Function to start the game.
         Sets game status to RUNNING and sets new food location.
@@ -55,7 +55,7 @@ class SnakeGame:
         self.setGameStatus(GameStatus.RUNNING)
         self.playground.setRandomFood()
 
-    def pauseGame(self):
+    def pauseGame(self) -> None:
         """
         Function to pause the game.
         Sets game status to PAUSED if game status is currently RUNNING.
@@ -67,7 +67,7 @@ class SnakeGame:
         else:
             self.setGameStatus(GameStatus.RUNNING)
 
-    def stopGame(self):
+    def stopGame(self) -> None:
         """
         Function to stop the game.
         Sets game status to STOPED
@@ -75,16 +75,17 @@ class SnakeGame:
 
         self.setGameStatus(GameStatus.STOPPED)
 
-    def isGameRunning(self):
+    def isGameRunning(self) -> bool:
         """
         Function to check if game is running.
 
-        :return: is game running
+        :returns: is game running
+        :rtype: bool
         """
 
         return self.getGameStatus() == GameStatus.RUNNING
 
-    def resetGame(self):
+    def resetGame(self) -> None:
         """
         Function to reset the game at the end.
         Sets game status to RESETTING.
@@ -102,7 +103,7 @@ class SnakeGame:
 
         self.setGameStatus(GameStatus.WAITING_FOR_NEXT_PLAYER)
 
-    def gameOver(self, win: bool, message: Message):
+    def gameOver(self, win: bool, message: Message) -> bool:
         """
         Function to set game status to game over.
 
@@ -121,11 +122,11 @@ class SnakeGame:
 
         return win
 
-    def surrenderGame(self):
+    def surrenderGame(self) -> None:
         self.gameOver(False, Message.SURRENDER)
         self.resetGame()
 
-    def performGameOverCheck(self):
+    def performGameOverCheck(self) -> None:
         """
         Function to set game over.
         Checks the cause of the game over.

@@ -1,3 +1,5 @@
+from typing import List
+
 from Logger import Logger
 from Playground import Playground
 from enums.Direction import Direction
@@ -7,7 +9,7 @@ from enums.Message import Message
 
 class Player:
 
-    def __init__(self, playground: Playground):
+    def __init__(self, playground: Playground) -> None:
         """
         Player constructor where positions of player will be initialised.
         Sets default player position of length 2 in the middle of the playground.
@@ -15,17 +17,17 @@ class Player:
         :param playground: Playground Object where player will be appended to
         """
 
-        self.playerPositions = []  # list of tuples (height, width)
+        self.playerPositions: List[tuple] = []  # list of tuples (height, width)
 
-        self.playground = playground
+        self.playground: Playground = playground
         self.playerPositions.append((int(self.playground.height / 2), int(self.playground.width / 2)))
         self.playerPositions.append((int(self.playground.height / 2), int(self.playground.width / 2 - 1)))
         self.setPlayerPositionTiles()
 
-        self.__currentMovingDirection = Direction.RIGHT
-        self.__allowDirectionInputs = True  # bool to prevent multi direction inputs
+        self.__currentMovingDirection: Direction = Direction.RIGHT
+        self.__allowDirectionInputs: bool = True  # bool to prevent multi direction inputs
 
-    def resetPlayer(self):
+    def resetPlayer(self) -> None:
         """
         Function to reset the player.
         Simply calls the player constructor.
@@ -33,18 +35,18 @@ class Player:
 
         self.__init__(self.playground)
 
-    def setPlayerPositionTiles(self):
+    def setPlayerPositionTiles(self) -> None:
         """
         Function to set tiles onto the playground of the player positions.
         """
 
         for position in self.playerPositions:
-            positionHeight = position[0]
-            positionWidth = position[1]
+            positionHeight: int = position[0]
+            positionWidth: int = position[1]
 
             self.playground.setTile(positionHeight, positionWidth, PlaygroundTile.SNAKE)
 
-    def feed(self):
+    def feed(self) -> bool:
         """
         Function to check if player head is on food position.
         If head has eaten food, sets the player position tiles and
@@ -61,7 +63,7 @@ class Player:
 
         return False
 
-    def hasEatenSelf(self):
+    def hasEatenSelf(self) -> bool:
         """
         Function to check if player has eaten himself.
 
@@ -74,7 +76,7 @@ class Player:
 
         return False
 
-    def hasHitWall(self):
+    def hasHitWall(self) -> bool:
         """
         Function to check if player has hit a wall tile.
 
@@ -82,13 +84,13 @@ class Player:
         :rtype: bool
         """
 
-        playerPos = self.playerPositions[0]
+        playerPos: tuple = self.playerPositions[0]
         if self.playground.getPlaygroundMatrix()[playerPos[0]][playerPos[1]] == PlaygroundTile.WALL:
             return True
 
         return False
 
-    def move(self):
+    def move(self) -> bool:
         """
         Function to move player to new location based on current moving direction.
         Releases Direction change block at the end.
@@ -106,43 +108,43 @@ class Player:
         :rtype: bool
         """
 
-        newHeight = self.playerPositions[0][0]
-        newWidth = self.playerPositions[0][1]
+        newHeight: int = self.playerPositions[0][0]
+        newWidth: int = self.playerPositions[0][1]
 
         if self.__currentMovingDirection is Direction.UP:
             newHeight -= 1
-            newHeight = newHeight if newHeight >= 0 else self.playground.height - 1
+            newHeight: int = newHeight if newHeight >= 0 else self.playground.height - 1
 
         elif self.__currentMovingDirection is Direction.DOWN:
             newHeight += 1
-            newHeight = newHeight if newHeight < self.playground.height else 0
+            newHeight: int = newHeight if newHeight < self.playground.height else 0
 
         elif self.__currentMovingDirection is Direction.RIGHT:
             newWidth += 1
-            newWidth = newWidth if newWidth < self.playground.width else 0
+            newWidth: int = newWidth if newWidth < self.playground.width else 0
 
         elif self.__currentMovingDirection is Direction.LEFT:
             newWidth -= 1
-            newWidth = newWidth if newWidth >= 0 else self.playground.width - 1
+            newWidth: int = newWidth if newWidth >= 0 else self.playground.width - 1
 
         self.playerPositions.insert(0, (newHeight, newWidth))
 
-        action = self.checkForAction()
+        action: Message = self.checkForAction()
         if action is not Message.NONE:
             Logger.log(f"Action: {action.name}")
-            self.__allowDirectionInputs = True
+            self.__allowDirectionInputs: bool = True
             return True
 
         if len(self.playerPositions) > 0:
-            removedTile = self.playerPositions.pop()
+            removedTile: tuple = self.playerPositions.pop()
             self.playground.setTile(removedTile[0], removedTile[1], PlaygroundTile.VOID)
 
-        self.__allowDirectionInputs = True
+        self.__allowDirectionInputs: bool = True
         self.setPlayerPositionTiles()
 
         return False
 
-    def checkForAction(self):
+    def checkForAction(self) -> Message:
         """
         Function to check if a specific action has occurred (e.g. eaten self, food eaten).
 
@@ -164,17 +166,17 @@ class Player:
 
         return Message.NONE
 
-    def getCurrentDirection(self):
+    def getCurrentDirection(self) -> Direction:
         """
         Function to get the current moving direction.
 
         :returns: current moving direction
-        :rtype: bool
+        :rtype: Direction
         """
 
         return self.__currentMovingDirection
 
-    def setDirectionDown(self):
+    def setDirectionDown(self) -> bool:
         """
         Function to set new moving direction.
         Returns false if direction change is currently blocked to prevent multi direction change.
@@ -187,14 +189,14 @@ class Player:
         if not self.__allowDirectionInputs:
             return False
 
-        self.__allowDirectionInputs = False
+        self.__allowDirectionInputs: bool = False
 
         self.__currentMovingDirection = Direction.DOWN if self.__currentMovingDirection != Direction.UP \
             else Direction.UP
 
         return True
 
-    def setDirectionUp(self):
+    def setDirectionUp(self) -> bool:
         """
         Function to set new moving direction.
         Returns false if direction change is currently blocked to prevent multi direction change.
@@ -207,14 +209,14 @@ class Player:
         if not self.__allowDirectionInputs:
             return False
 
-        self.__allowDirectionInputs = False
+        self.__allowDirectionInputs: bool = False
 
         self.__currentMovingDirection = Direction.UP if self.__currentMovingDirection != Direction.DOWN \
             else Direction.DOWN
 
         return True
 
-    def setDirectionRight(self):
+    def setDirectionRight(self) -> bool:
         """
         Function to set new moving direction.
         Returns false if direction change is currently blocked to prevent multi direction change.
@@ -227,14 +229,14 @@ class Player:
         if not self.__allowDirectionInputs:
             return False
 
-        self.__allowDirectionInputs = False
+        self.__allowDirectionInputs: bool = False
 
         self.__currentMovingDirection = Direction.RIGHT if self.__currentMovingDirection != Direction.LEFT \
             else Direction.LEFT
 
         return True
 
-    def setDirectionLeft(self):
+    def setDirectionLeft(self) -> bool:
         """
         Function to set new moving direction.
         Returns false if direction change is currently blocked to prevent multi direction change.
@@ -247,7 +249,7 @@ class Player:
         if not self.__allowDirectionInputs:
             return False
 
-        self.__allowDirectionInputs = False
+        self.__allowDirectionInputs: bool = False
 
         self.__currentMovingDirection = Direction.LEFT if self.__currentMovingDirection != Direction.RIGHT \
             else Direction.RIGHT

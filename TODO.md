@@ -15,3 +15,5 @@ Snake
 
 
 - [ ] admin seite für game auswahl
+
+Start command: uvicorn backend.app:app --reload
