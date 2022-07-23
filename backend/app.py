@@ -132,6 +132,11 @@ def queueLeave(response: Response, userId: Optional[str] = Cookie(None)):
     return {"message": f"Queue left successfully", "success": True}
 
 
+@app.get("/queue/length", status_code=status.HTTP_200_OK)
+def queueLeave(response: Response):
+    return {"message": f"Queue length: {len(game.queue.getQueue())}", "len": len(game.queue.getQueue()), "success": True}
+
+
 @app.get("/current_user", status_code=status.HTTP_200_OK)
 def currentUser(response: Response, userId: Optional[str] = Cookie(None)):
     if not userId:

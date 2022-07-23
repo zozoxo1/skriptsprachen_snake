@@ -13,6 +13,10 @@ Snake
 - [x] status setzen auf WAITING_FOR_PLAYER_TO_START wenn in queue
 - [ ] score einbauen
 
+### Frontend
+- [ ] Wenn in queue, abfragen ob Spieler als nächstes dran ist -> danach weiterleiten
+- [ ] userId cookie setzen, wenn noch nicht vorhanden (länge: 32)
+
 
 - [ ] admin seite für game auswahl
 
