@@ -10,4 +10,9 @@ export default class Queue {
     dequeue() {
     }
 
+    // Return if its my turn
+    isNext() {
+        return false;
+    }
+
 }

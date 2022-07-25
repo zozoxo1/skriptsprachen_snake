@@ -77,6 +77,69 @@ body, html {
 
 
 /**========================================================================
+ *                           Controller
+ *========================================================================**/
+
+#controller-div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#controller {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#controller .inner-circle {
+    background: var(--default-background);
+    border-radius: 50%;
+    height: 70%;
+    width: 70%;
+    box-shadow: 0px 0px 0px 1.5px white;
+    transition: all .1s ease-in-out;
+    -webkit-transition: all .1s ease-in-out;
+    -moz-transition: all .1s ease-in-out;
+    -ms-transition: all .1s ease-in-out;
+    -o-transition: all .1s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#controller .inner-circle.up {
+    box-shadow: 0px -25px 40px 10px rgba(255, 255, 255, .7);
+}
+
+#controller .inner-circle.down {
+    box-shadow: 0px 25px 40px 10px rgba(255, 255, 255, .7);
+}
+
+#controller .inner-circle.left {
+    box-shadow: -25px 0px 40px 10px rgba(255, 255, 255, .7);
+}
+
+#controller .inner-circle.right {
+    box-shadow: 25px 0px 40px 10px rgba(255, 255, 255, .7);
+}
+
+#controller .btn-game-status {
+    height: 80px;
+    width: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+
+/**========================================================================
  *                           Classes
  *========================================================================**/
 

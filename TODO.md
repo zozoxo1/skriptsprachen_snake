@@ -12,10 +12,12 @@ Snake
 - [ ] wände anders setzen
 - [x] status setzen auf WAITING_FOR_PLAYER_TO_START wenn in queue
 - [ ] score einbauen
+- [ ] game beenden wenn spieler mehr als 20 sekunden kein input mehr macht im backend
 
 ### Frontend
-- [ ] Wenn in queue, abfragen ob Spieler als nächstes dran ist -> danach weiterleiten
-- [ ] userId cookie setzen, wenn noch nicht vorhanden (länge: 32)
+- [x] Wenn in queue, abfragen ob Spieler als nächstes dran ist -> danach weiterleiten
+- [x] userId cookie setzen, wenn noch nicht vorhanden (länge: 32)
+- [ ] controller check if game is over
 
 
 - [ ] admin seite für game auswahl
