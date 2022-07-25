@@ -24,6 +24,8 @@ window.addEventListener('DOMContentLoaded', () => {
             queueTextInQueueInterval == null ? undefined : clearInterval(queueTextInQueueInterval);
             queueCheckNextInterval == null ? undefined : clearInterval(queueCheckNextInterval);
 
+            queue.dequeue();
+
             playBtn.classList.remove('btn-cancel');
             playBtn.innerHTML = 'Spielen';
 
@@ -36,6 +38,8 @@ window.addEventListener('DOMContentLoaded', () => {
             cookieHandler.checkDefaultCookies();
 
             queueTextRefreshInterval == null ? undefined : clearInterval(queueTextRefreshInterval);
+
+            queue.enqueue();
 
             playBtn.classList.add('btn-cancel');
             playBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">'

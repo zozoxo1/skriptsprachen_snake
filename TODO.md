@@ -13,6 +13,7 @@ Snake
 - [x] status setzen auf WAITING_FOR_PLAYER_TO_START wenn in queue
 - [ ] score einbauen
 - [ ] game beenden wenn spieler mehr als 20 sekunden kein input mehr macht im backend
+- [ ] wenn waiting for player to start 20 sekunden lang ist dann game beenden -> im frontend prüfen ob man immer noch an der reihe ist
 
 ### Frontend
 - [x] Wenn in queue, abfragen ob Spieler als nächstes dran ist -> danach weiterleiten
