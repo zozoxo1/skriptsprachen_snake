@@ -2,6 +2,8 @@ import ControllerHandler from './handler/controller_handler.js';
 
 const controllerHandler = new ControllerHandler();
 
+let checkGameOverInterval = null;
+
 let statusButton = null;
 
 var canMoveRight = true;
@@ -170,8 +172,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
             window.addEventListener('deviceorientation', event => orientationEvent(event));
 
-            // check if game is over or if user is not permitted to play
-
             statusButton.classList.add("playing");
 
             statusButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-pause" width="75" height="75" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">'
@@ -182,5 +182,17 @@ window.addEventListener('DOMContentLoaded', () => {
         }
  
      });
+
+
+     /**=======================================================================================================================
+      *                                                    GameOver Check
+      *=======================================================================================================================**/
+
+    checkGameOverInterval = setInterval(() => {
+        if(controllerHandler.isGameOver()) {
+            clearInterval(checkGameOverInterval);
+            window.location.href = REDIRECT_GAMEOVER;
+        }
+    }, 1000);
 
 });

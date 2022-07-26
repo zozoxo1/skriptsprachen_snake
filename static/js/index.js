@@ -16,7 +16,12 @@ window.addEventListener('DOMContentLoaded', () => {
     let queueTextInQueueInterval = null;
     let queueCheckNextInterval = null;
     let queueTextRefreshInterval = setInterval(() => {
-        queueText.innerHTML = queue.size() + " Spieler";
+
+        Promise.resolve(queue.size())
+            .then(data => {
+                queueText.innerHTML = data + " Spieler";
+            });
+        
     }, 1000);
 
     playBtn.addEventListener('click', () => {
@@ -29,10 +34,16 @@ window.addEventListener('DOMContentLoaded', () => {
             playBtn.classList.remove('btn-cancel');
             playBtn.innerHTML = 'Spielen';
 
-            queueText.innerHTML = queue.size() + " Spieler";
+            Promise.resolve(queue.size())
+                .then(data => {
+                    queueText.innerHTML = data + " Spieler";
+                });
 
             queueTextRefreshInterval = setInterval(() => {
-                queueText.innerHTML = queue.size() + " Spieler";
+                Promise.resolve(queue.size())
+                    .then(data => {
+                        queueText.innerHTML = data + " Spieler";
+                    });
             }, 1000);
         } else {
             cookieHandler.checkDefaultCookies();
@@ -57,12 +68,15 @@ window.addEventListener('DOMContentLoaded', () => {
             }, 300);
 
             queueCheckNextInterval = setInterval(() => {
-                if(queue.isNext()) {
-                    clearInterval(queueTextInQueueInterval);
-                    clearInterval(queueCheckNextInterval);
-
-                    window.location.href = '/controller.html';
-                }
+                Promise.resolve(queue.isNext())
+                    .then(next => {
+                        if(next) {
+                            clearInterval(queueTextInQueueInterval);
+                            clearInterval(queueCheckNextInterval);
+        
+                            window.location.href = REDIRECT_CONTROLLER;
+                        }
+                    });
             }, 1000);
         }
     });

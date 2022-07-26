@@ -151,7 +151,7 @@ def currentUser(response: Response, userId: Optional[str] = Cookie(None)):
         return {"message": "current users differs from userId", "success": False}
 
     Logger.log(f"Next player: {userId}", Prefix.API)
-    return {"message": "you are the current user", "success": False}
+    return {"message": "you are the current user", "success": True}
 
 
 @app.delete("/surrender", status_code=status.HTTP_200_OK)

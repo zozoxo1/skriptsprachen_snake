@@ -31,7 +31,7 @@ body, html {
  *========================================================================**/
 
 #menu-title {
-    padding-block: 5em;
+    padding-block: 4em;
     text-align: center;
     position: relative;
     height: 100px;
@@ -54,10 +54,19 @@ body, html {
 
 #menu-title span {
     position: absolute;
-    top: 130px;
+    top: 115px;
     left: calc(50% + 60px);
     transform: translateX(-50%);
     width: 150px;
+}
+
+
+/**========================================================================
+ *                           Score
+ *========================================================================**/
+
+#score {
+    margin-bottom: 60px;
 }
 
 
