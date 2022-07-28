@@ -16,6 +16,7 @@ Snake
 - [ ] game beenden wenn spieler mehr als 20 sekunden kein input mehr macht im backend
 - [ ] wenn waiting for player to start 20 sekunden lang ist dann game beenden
 - [ ] darstellung auf raspy
+- [ ] klassen und imports aussoriteren
 
 ### Frontend
 - [x] Wenn in queue, abfragen ob Spieler als nächstes dran ist -> danach weiterleiten

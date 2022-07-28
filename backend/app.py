@@ -1,4 +1,7 @@
 from typing import Optional
+import sys
+
+sys.path.append('../snake')
 
 from fastapi import FastAPI, Cookie, status, Response
 from enums.Direction import Direction
@@ -7,11 +10,13 @@ from enums.Prefix import Prefix
 from Logger import Logger
 from SnakeGame import SnakeGame
 from Display import Display
+import threading
+import uvicorn
 
 app = FastAPI()
 game = SnakeGame(20, 20)
 
-game.queue.addPlayerToQueue("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+game.queue.addPlayerToQueue("1770f996e0b940767b91013687a3e432")
 Logger.log(game.getGameStatus().value)
 
 """
@@ -171,3 +176,6 @@ def currentUser(response: Response, userId: Optional[str] = Cookie(None)):
 
     Logger.log(f"Game surrendered: {userId}", Prefix.API)
     return {"message": "game surrendered successfully", "success": True}
+
+if __name__ == "__main__":
+    uvicorn.run("app:app", port=80, host="::", log_level="info")

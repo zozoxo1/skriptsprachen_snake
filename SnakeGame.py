@@ -4,7 +4,10 @@ from Playground import Playground
 from Queue import Queue
 from enums.GameStatus import GameStatus
 from enums.Message import Message
-
+from Display import Display
+from multiprocessing import Process
+import threading
+import os
 
 class SnakeGame:
 
@@ -54,6 +57,29 @@ class SnakeGame:
 
         self.setGameStatus(GameStatus.RUNNING)
         self.playground.setRandomFood()
+
+        newpid = os.fork()
+        newpid2 = os.fork()
+        if newpid == 0:
+            display = Display()
+            display.setPlayground(self.playground)
+            print(f"child: {os.getpid()}")
+            display.process()
+        else:
+            pids = (os.getpid(), newpid)
+            print("parent: %d, child: %d\n" % pids)
+
+        #if newpid2 == 0:
+        #    self.loop()
+
+    def loop(self):
+        while True:
+            sleep(0.3)
+            if self.isGameRunning():
+                m = self.player.move()
+
+                if m:
+                    self.performGameOverCheck()
 
     def pauseGame(self) -> None:
         """
