@@ -6,9 +6,11 @@ from enums.GameStatus import GameStatus
 from enums.Prefix import Prefix
 from Logger import Logger
 from SnakeGame import SnakeGame
+from Display import Display
 
 app = FastAPI()
 game = SnakeGame(20, 20)
+
 game.queue.addPlayerToQueue("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 Logger.log(game.getGameStatus().value)
 
@@ -169,4 +171,3 @@ def currentUser(response: Response, userId: Optional[str] = Cookie(None)):
 
     Logger.log(f"Game surrendered: {userId}", Prefix.API)
     return {"message": "game surrendered successfully", "success": True}
-
