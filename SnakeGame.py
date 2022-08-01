@@ -8,6 +8,7 @@ from Display import Display
 from multiprocessing import Process
 import threading
 import os
+import time
 
 class SnakeGame:
 
@@ -58,23 +59,27 @@ class SnakeGame:
         self.setGameStatus(GameStatus.RUNNING)
         self.playground.setRandomFood()
 
-        newpid = os.fork()
-        newpid2 = os.fork()
-        if newpid == 0:
-            display = Display()
-            display.setPlayground(self.playground)
-            print(f"child: {os.getpid()}")
-            display.process()
-        else:
-            pids = (os.getpid(), newpid)
-            print("parent: %d, child: %d\n" % pids)
+        display = Display()
+        display.setPlayground(self.playground)
+        display.setPlayer(self.player)
 
-        #if newpid2 == 0:
-        #    self.loop()
+        displayThread = threading.Thread(target=display.process)
+        displayThread.daemon = True
+
+        gameLoop = threading.Thread(target=self.loop)
+        gameLoop.daemon = True
+        
+        gameLoop.start()
+        displayThread.start()
+        
+        gameLoop.join()
+        display.terminate()
+        displayThread.join()
 
     def loop(self):
-        while True:
-            sleep(0.3)
+        while self.getGameStatus() == GameStatus.RUNNING or self.getGameStatus() == GameStatus.PAUSED:
+            time.sleep(0.3)
+            
             if self.isGameRunning():
                 m = self.player.move()
 
@@ -142,15 +147,16 @@ class SnakeGame:
         :rtype: bool
         """
 
+        self.queue.removeCurrentPlayer()
         self.setGameStatus(GameStatus.GAME_OVER)
         Logger.log("Game Over!")
+        self.resetGame()
         self.queue.nextPlayer()
 
         return win
 
     def surrenderGame(self) -> None:
         self.gameOver(False, Message.SURRENDER)
-        self.resetGame()
 
     def performGameOverCheck(self) -> None:
         """
@@ -169,15 +175,9 @@ class SnakeGame:
 
         if self.player.hasEatenSelf():
             self.gameOver(False, Message.EATEN_SELF)
-            self.resetGame()
-            self.startGame()
 
         if self.player.hasHitWall():
             self.gameOver(False, Message.HIT_WALL)
-            self.resetGame()
-            self.startGame()
 
         if self.playground.isPlaygroundFull():
             self.gameOver(True, Message.PLAYGROUND_FULL)
-            self.resetGame()
-            self.startGame()

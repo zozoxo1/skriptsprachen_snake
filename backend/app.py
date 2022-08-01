@@ -15,8 +15,6 @@ import uvicorn
 
 app = FastAPI()
 game = SnakeGame(20, 20)
-
-game.queue.addPlayerToQueue("1770f996e0b940767b91013687a3e432")
 Logger.log(game.getGameStatus().value)
 
 """
@@ -66,7 +64,7 @@ def startGame(response: Response, userId: Optional[str] = Cookie(None)):
         response.status_code = status.HTTP_401_UNAUTHORIZED
         return {"message": "userId cookie not set", "success": False}
 
-    if userId != game.queue.getCurrentPlayer():
+    if userId != game.queue.getCurrentPlayer() or game.queue.getCurrentPlayer() == "":
         Logger.log(f"Game start from {userId}: NOT THE CURRENT USER", Prefix.API)
         response.status_code = status.HTTP_425_TOO_EARLY
         return {"message": "current users differs from userId", "success": False}
@@ -76,7 +74,9 @@ def startGame(response: Response, userId: Optional[str] = Cookie(None)):
         return {"message": "game already started", "success": False}
 
     game.startGame()
+
     Logger.log(f"Game start from {userId}: STARTED", Prefix.API)
+    Logger.log(f"Current user {game.queue.getCurrentPlayer()}", Prefix.API)
 
     return {"message": f"game started successfully", "success": True}
 
@@ -141,7 +141,8 @@ def queueLeave(response: Response, userId: Optional[str] = Cookie(None)):
 
 @app.get("/queue/length", status_code=status.HTTP_200_OK)
 def queueLeave(response: Response):
-    return {"message": f"Queue length: {len(game.queue.getQueue())}", "len": len(game.queue.getQueue()), "success": True}
+    queue_length = len(game.queue.getQueue()) + 1 if game.queue.getCurrentPlayer() != "" else len(game.queue.getQueue())
+    return {"message": f"Queue length: {queue_length}", "len": queue_length, "success": True}
 
 
 @app.get("/current_user", status_code=status.HTTP_200_OK)
@@ -162,7 +163,7 @@ def currentUser(response: Response, userId: Optional[str] = Cookie(None)):
 
 
 @app.delete("/surrender", status_code=status.HTTP_200_OK)
-def currentUser(response: Response, userId: Optional[str] = Cookie(None)):
+def surrenderGame(response: Response, userId: Optional[str] = Cookie(None)):
     if not userId:
         Logger.log(f"Surrender request from {userId}: UNAUTHORIZED", Prefix.API)
         response.status_code = status.HTTP_401_UNAUTHORIZED
@@ -178,4 +179,4 @@ def currentUser(response: Response, userId: Optional[str] = Cookie(None)):
     return {"message": "game surrendered successfully", "success": True}
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", port=80, host="::", log_level="info")
+    uvicorn.run("app:app", port=80, host="::", reload=True, log_level="info")

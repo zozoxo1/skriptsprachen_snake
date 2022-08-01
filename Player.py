@@ -23,6 +23,7 @@ class Player:
         self.playerPositions.append((int(self.playground.height / 2), int(self.playground.width / 2)))
         self.playerPositions.append((int(self.playground.height / 2), int(self.playground.width / 2 - 1)))
         self.setPlayerPositionTiles()
+        self.score: int = (len(self.playerPositions) - 2) * 100
 
         self.__currentMovingDirection: Direction = Direction.RIGHT
         self.__allowDirectionInputs: bool = True  # bool to prevent multi direction inputs
@@ -59,9 +60,13 @@ class Player:
         if self.playground.getFoodPosition() == self.playerPositions[0]:
             self.setPlayerPositionTiles()
             self.playground.setRandomFood()
+            self.score = (len(self.playerPositions) - 2) * 100
             return True
 
         return False
+
+    def getScore(self) -> int:
+        return self.score
 
     def hasEatenSelf(self) -> bool:
         """

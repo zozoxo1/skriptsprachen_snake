@@ -31,10 +31,12 @@ class Queue:
 
         if len(self.__queue) <= 0:
             self.__currentPlayer: str = ""
+            Logger.log("Set current player to none", Prefix.QUEUE)
             return False
 
         self.__currentPlayer: str = self.__queue.pop(0)
         self.game.setGameStatus(GameStatus.WAITING_FOR_PLAYER_TO_START)
+        Logger.log(f"Set current player to {self.__currentPlayer}", Prefix.QUEUE)
 
         return True
 
@@ -79,6 +81,9 @@ class Queue:
             Logger.log(f"User appended to Queue: {userId}", Prefix.QUEUE)
 
         return True
+
+    def removeCurrentPlayer(self):
+        self.__currentPlayer = ""
 
     def removePlayerFromQueue(self, userId: str) -> bool:
         """
