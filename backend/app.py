@@ -15,7 +15,6 @@ import uvicorn
 
 app = FastAPI()
 game = SnakeGame(20, 20)
-Logger.log(game.getGameStatus().value)
 
 """
 API Methoden:
@@ -73,10 +72,11 @@ def startGame(response: Response, userId: Optional[str] = Cookie(None)):
         response.status_code = status.HTTP_403_FORBIDDEN
         return {"message": "game already started", "success": False}
 
-    game.startGame()
+    Logger.log(f"GameStatus {game.getGameStatus()}", Prefix.API)
 
     Logger.log(f"Game start from {userId}: STARTED", Prefix.API)
-    Logger.log(f"Current user {game.queue.getCurrentPlayer()}", Prefix.API)
+
+    game.startGame()
 
     return {"message": f"game started successfully", "success": True}
 
@@ -178,5 +178,27 @@ def surrenderGame(response: Response, userId: Optional[str] = Cookie(None)):
     Logger.log(f"Game surrendered: {userId}", Prefix.API)
     return {"message": "game surrendered successfully", "success": True}
 
+@app.get("/gameover", status_code=status.HTTP_200_OK)
+def isGameOver(response: Response, userId: Optional[str] = Cookie(None)):
+    if not userId:
+        Logger.log(f"Game Over request from {userId}: UNAUTHORIZED", Prefix.API)
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return {"message": "userId cookie not set", "success": False}
+
+    if not game.queue.getCurrentPlayer() == userId:
+        response.status_code = status.HTTP_200_OK
+        return {"message": "current users differs from userId", "success": True}
+
+    response.status_code = status.HTTP_425_TOO_EARLY
+    return {"message": "no action", "success": False}
+
+@app.get('/threads')
+def getThreads():
+    l = []
+    for thread in threading.enumerate(): 
+        print(thread.name)
+        l.append(thread.name)
+    return l
+
 if __name__ == "__main__":
-    uvicorn.run("app:app", port=80, host="::", reload=True, log_level="info")
+    uvicorn.run("app:app", port=80, host="::", reload=True, debug=True, log_level="info", workers=1)

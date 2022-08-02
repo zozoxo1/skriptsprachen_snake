@@ -63,10 +63,10 @@ class SnakeGame:
         display.setPlayground(self.playground)
         display.setPlayer(self.player)
 
-        displayThread = threading.Thread(target=display.process)
+        displayThread = threading.Thread(name="Display", target=display.process)
         displayThread.daemon = True
 
-        gameLoop = threading.Thread(target=self.loop)
+        gameLoop = threading.Thread(name="Gameloop", target=self.loop)
         gameLoop.daemon = True
         
         gameLoop.start()
