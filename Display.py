@@ -53,12 +53,19 @@ class Display(SampleBase):
 
     def draw(self, offset_canvas):
         matrix = self.getPlayground()
-        offsetX = 12
+        offsetX = 32 - (int(len(self.getPlayground())) * 2) / 2
         offsetY = 20
         offset_canvas.Clear()
         font = graphics.Font()
         font.LoadFont("/home/pi/rpi_rgb_led_matrix/fonts/4x6.bdf")
-        graphics.DrawText(offset_canvas, font, 12, 15, graphics.Color(255, 255, 255), "Score: " + str(self.player.getScore()))
+        text_length = len("Score: " + str(self.player.getScore())) * 4
+        graphics.DrawText(
+            offset_canvas,
+            font,
+            32 - (int(text_length / 2)), 15,
+            graphics.Color(255, 255, 255),
+            "Score: " + str(self.player.getScore())
+        )
 
         for row in range(0, len(matrix)):
             for col in range(0, len(matrix[0])):
@@ -107,12 +114,3 @@ class Display(SampleBase):
                             color[1], 
                             color[2]
                         )
-
-if __name__ == '__main__':
-    d = Display()
-    pg = Playground(20, 20)
-    pg.setTile(5, 5, PlaygroundTile.SNAKE)
-    d.setPlayground(pg)
-    pg.setTile(18, 18, PlaygroundTile.FOOD)
-    pg.setTile(0, 0, PlaygroundTile.SNAKE)
-    d.process()

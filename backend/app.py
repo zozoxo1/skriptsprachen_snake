@@ -25,7 +25,6 @@ API Methoden:
 getScore -> nur wenn man gerade erst gespielt hat
 """
 
-
 @app.put("/move/{direction}", status_code=status.HTTP_200_OK)
 def movePlayer(direction: str, response: Response, userId: Optional[str] = Cookie(None)):
     if not userId:
@@ -194,6 +193,23 @@ def isGameOver(response: Response, userId: Optional[str] = Cookie(None)):
 
     response.status_code = status.HTTP_425_TOO_EARLY
     return {"message": "no action", "success": False}
+
+
+@app.get("/score", status_code=status.HTTP_200_OK)
+def getScore(response: Response, userId: Optional[str] = Cookie(None)):
+    if not userId:
+        Logger.log(f"Score request from {userId}: UNAUTHORIZED", Prefix.API)
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return {"message": "userId cookie not set", "success": False}
+
+    score = game.getScore(userId)
+
+    if score == -1:
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return {"message": "no score available", "score": 0, "success": False}
+
+    return {f"message": "Score: {score}", "score": score, "success": True}
+
 
 @app.get('/threads')
 def getThreads():

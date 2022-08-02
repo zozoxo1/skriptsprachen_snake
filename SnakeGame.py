@@ -10,6 +10,7 @@ import threading
 import os
 import time
 
+
 class SnakeGame:
 
     def __init__(self, height: int, width: int) -> None:
@@ -27,8 +28,10 @@ class SnakeGame:
         self.playground: Playground = Playground(self.height, self.width)
         self.player: Player = Player(self.playground)
         self.queue: Queue = Queue(self)
+        self.scores = {} # Score dict -> username: score
 
         self.__gameStatus: GameStatus = GameStatus.WAITING_FOR_NEXT_PLAYER
+
 
     def setGameStatus(self, gameStatus: GameStatus) -> None:
         """
@@ -39,6 +42,15 @@ class SnakeGame:
 
         self.__gameStatus: GameStatus = gameStatus
         Logger.log(f"Game Status wurde geändert: {gameStatus.name}")
+
+    def addScore(self, userId: str, score: int) -> None:
+        self.scores[userId] = score
+
+    def getScore(self, userId: str) -> int:
+        if userId in self.scores:
+            return self.scores[userId]
+        
+        return -1
 
     def getGameStatus(self) -> GameStatus:
         """
@@ -147,6 +159,7 @@ class SnakeGame:
         :rtype: bool
         """
 
+        self.addScore(self.queue.getCurrentPlayer(), self.player.score)
         self.queue.removeCurrentPlayer()
         self.setGameStatus(GameStatus.GAME_OVER)
         Logger.log("Game Over!")

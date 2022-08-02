@@ -8,8 +8,6 @@ Snake
   - [ ] Player move methode
   - [ ] funktionen private machen wenn sie nicht gebraucht werden
 - [ ] how to use als kommentar für funktionen
-- [ ] wände als level
-- [ ] wände anders setzen
 - [x] status setzen auf WAITING_FOR_PLAYER_TO_START wenn in queue
 - [ ] score einbauen -> return success True und score value
 
@@ -25,7 +23,6 @@ Snake
 - [x] controller check if player is current player
 - [x] weiterleiten auf score seite wenn game over ist oder current player != userId
 - [x] is game over funktionell machen
+- [ ] steuerung anpassen
 
 - [ ] admin seite für game auswahl
-
-Start command: uvicorn backend.app:app --reload
