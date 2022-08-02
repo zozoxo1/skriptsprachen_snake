@@ -1,0 +1,252 @@
+@import url('https://fonts.googleapis.com/css2?family=Merienda:wght@700&display=swap');
+
+:root {
+    --background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+    --btn-background: rgba(34, 34, 67, 0.381);
+    --btn-border: rgba(255, 255, 255, .4);
+    --btn-hover: #393c49;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/**========================================================================
+ *                           Main Wrapper
+ *========================================================================**/
+
+#main-wrapper {
+    height: 100%;
+    background: var(--background);
+    color: white;
+    text-align: center;
+}
+
+
+/**========================================================================
+ *                           Menu Title
+ *========================================================================**/
+
+#menu-title {
+    padding-block: 4em;
+    text-align: center;
+    position: relative;
+    height: 100px;
+    width: 100%;
+}
+
+#menu-title .arcade-font {
+    font-family: 'Merienda', cursive;
+    font-size: 2em;
+    letter-spacing: 3px;
+    color: rgb(243, 243, 12);
+    margin: 0;
+}
+
+#menu-title .arcade-font::first-letter {
+    font-size: 2.1em;
+    line-height: 1em;
+    vertical-align: top;
+}
+
+#menu-title span {
+    position: absolute;
+    top: 115px;
+    left: calc(50% + 60px);
+    transform: translateX(-50%);
+    width: 150px;
+}
+
+
+/**========================================================================
+ *                           Score
+ *========================================================================**/
+
+#score {
+    margin-bottom: 60px;
+}
+
+
+/**========================================================================
+ *                           Menu Buttons
+ *========================================================================**/
+
+#menu-buttons {
+    flex-basis: 100%;
+}
+
+#menu-buttons .queue-size .queue-size-text {
+    position: relative;
+    top: -5px;
+    left: 5px;
+}
+
+
+/**========================================================================
+ *                           Controller
+ *========================================================================**/
+
+#controller-div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#controller {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#controller .inner-circle {
+    background: var(--default-background);
+    border-radius: 50%;
+    height: 70%;
+    width: 70%;
+    box-shadow: 0px 0px 0px 1.5px white;
+    transition: all .1s ease-in-out;
+    -webkit-transition: all .1s ease-in-out;
+    -moz-transition: all .1s ease-in-out;
+    -ms-transition: all .1s ease-in-out;
+    -o-transition: all .1s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#controller .inner-circle.up {
+    box-shadow: 0px -25px 40px 10px rgba(255, 255, 255, .7);
+}
+
+#controller .inner-circle.down {
+    box-shadow: 0px 25px 40px 10px rgba(255, 255, 255, .7);
+}
+
+#controller .inner-circle.left {
+    box-shadow: -25px 0px 40px 10px rgba(255, 255, 255, .7);
+}
+
+#controller .inner-circle.right {
+    box-shadow: 25px 0px 40px 10px rgba(255, 255, 255, .7);
+}
+
+#controller .btn-game-status {
+    height: 80px;
+    width: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+
+/**========================================================================
+ *                           Classes
+ *========================================================================**/
+
+.btn {
+    appearance: none;
+    background: var(--btn-background);
+    color: white;
+    font-size: 1.2em;
+    font-family: 'Courier New', Courier, monospace;
+    cursor: pointer;
+    width: 200px;
+    padding-block: 12px;
+    border: 1px solid var(--btn-border);
+    margin-bottom: 15px;
+    transition: all .2s;
+}
+
+.btn:hover {
+    background: var(--btn-hover);
+}
+
+.btn-center {
+    display: block;
+    margin-inline: auto;
+}
+
+.btn-cancel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    font-size: 12px;
+    border-radius: 50%;
+    animation: btn-cancel 2s ease-in-out infinite;
+}
+
+
+/**========================================================================
+ *                           MODAL
+ *========================================================================**/
+
+#modal {
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    flex-wrap: wrap;
+    flex-direction: column;
+    text-align: center;
+}
+
+#modal svg {
+    margin: 10px;
+}
+
+#modal.modal-svg-rotate svg {
+    animation: device-turn 2s;
+}
+
+#modal h1 {
+    margin: 20px;
+}
+
+/**========================================================================
+ *                           Animations
+ *========================================================================**/
+
+@keyframes btn-cancel {
+    0% {
+        transform: rotate(-90deg);
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes device-turn {
+    0% {
+        transform: rotate(-90deg);
+    }
+
+    60% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
