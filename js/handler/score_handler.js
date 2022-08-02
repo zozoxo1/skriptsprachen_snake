@@ -1,13 +1,11 @@
 export default class ScoreHandler {
 
     async getScore() {
-        let score = await fetch(API_ENDPOINTS["GET_CURRENT_PLAYER"], {method: "GET"})
+        let score = await fetch(API_ENDPOINTS["GET_SCORE"], {method: "GET"})
             .then(response => response.json())
             .then(data => {
-                if(data["success"]) {
+                if(data["score"] != undefined) {
                     return data["score"];
-                } else {
-                    return -1;
                 }
             })
             .catch(error => {
