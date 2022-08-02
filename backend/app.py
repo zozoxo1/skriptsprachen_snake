@@ -17,6 +17,9 @@ app = FastAPI()
 game = SnakeGame(20, 20)
 
 """
+Hint:
+To use this api, you have to set drop_previlege to False!
+
 API Methoden:
 
 getScore -> nur wenn man gerade erst gespielt hat
