@@ -90,7 +90,7 @@ class SnakeGame:
 
     def loop(self):
         while self.getGameStatus() == GameStatus.RUNNING or self.getGameStatus() == GameStatus.PAUSED:
-            time.sleep(0.3)
+            time.sleep(0.2)
             
             if self.isGameRunning():
                 m = self.player.move()

@@ -8,8 +8,10 @@ from Playground import Playground
 from Player import Player
 from enums.PlaygroundTile import PlaygroundTile
 from enums.GameStatus import GameStatus
+import datetime
 
 import threading
+import time
 
 import numpy as np
 
@@ -47,8 +49,28 @@ class Display(SampleBase):
     def run(self):
         offset_canvas = self.matrix.CreateFrameCanvas()
         
+        font = graphics.Font()
+        font.LoadFont("/home/pi/rpi_rgb_led_matrix/fonts/5x8.bdf")
+        textColor = graphics.Color(255, 255, 0)
+        pos = offset_canvas.width
+        my_text = "tetris.informatik.fh-swf.de"
+
         while self._running:
             self.draw(offset_canvas)
+
+            length = graphics.DrawText(offset_canvas, font, pos, 60, textColor, my_text)
+            pos -= 1
+            if (pos + length < 0):
+                pos = offset_canvas.width
+
+            time.sleep(0.03)
+
+            offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
+
+        time_now = datetime.datetime.now()
+        
+        while time_now > datetime.datetime.now() - datetime.timedelta(seconds=3):
+            graphics.DrawText(offset_canvas, font, int(32 - (len("Game Over") * 5) / 2), 25, textColor, "Game Over!")
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
     def draw(self, offset_canvas):

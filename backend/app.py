@@ -14,7 +14,7 @@ import threading
 import uvicorn
 
 app = FastAPI()
-game = SnakeGame(20, 20)
+game = SnakeGame(15, 15)
 
 """
 Hint:
