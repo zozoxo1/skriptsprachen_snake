@@ -9,6 +9,7 @@ from multiprocessing import Process
 import threading
 import os
 import time
+from datetime import datetime, timedelta
 
 
 class SnakeGame:
@@ -29,6 +30,8 @@ class SnakeGame:
         self.player: Player = Player(self.playground)
         self.queue: Queue = Queue(self)
         self.scores = {} # Score dict -> username: score
+        self.loopAfkCheckRunning = False
+        self.lastMove = datetime.now()
 
         self.__gameStatus: GameStatus = GameStatus.WAITING_FOR_NEXT_PLAYER
 
@@ -78,13 +81,19 @@ class SnakeGame:
         displayThread = threading.Thread(name="Display", target=display.process)
         displayThread.daemon = True
 
-        gameLoop = threading.Thread(name="Gameloop", target=self.loop)
-        gameLoop.daemon = True
+        gameLoopThread = threading.Thread(name="Gameloop", target=self.loop)
+        gameLoopThread.daemon = True
+
+        gameLoopAfkThread = threading.Thread(name="GameloopAfk", target=self.loopAfkCheck)
+        gameLoopAfkThread.daemon = True
         
-        gameLoop.start()
+        gameLoopThread.start()
         displayThread.start()
+        gameLoopAfkThread.start()
         
-        gameLoop.join()
+        gameLoopThread.join()
+        self.loopAfkCheckRunning = False
+        gameLoopAfkThread.join()
         display.terminate()
         displayThread.join()
 
@@ -97,6 +106,15 @@ class SnakeGame:
 
                 if m:
                     self.performGameOverCheck()
+
+    def loopAfkCheck(self):
+        self.loopAfkCheckRunning = True
+        self.lastMove = datetime.now()
+
+        while self.loopAfkCheckRunning:
+            if self.lastMove < datetime.now() - timedelta(seconds=20):
+                self.loopAfkCheckRunning = False
+                self.surrenderGame()
 
     def pauseGame(self) -> None:
         """

@@ -12,6 +12,7 @@ from SnakeGame import SnakeGame
 from Display import Display
 import threading
 import uvicorn
+from datetime import datetime
 
 app = FastAPI()
 game = SnakeGame(15, 15)
@@ -39,6 +40,7 @@ def movePlayer(direction: str, response: Response, userId: Optional[str] = Cooki
 
     directionValues = [member.value for member in Direction]
     direction = direction.upper()
+    game.lastMove = datetime.now()
 
     Logger.log(f"Movement from {userId}: {direction}", Prefix.API)
 
@@ -73,6 +75,8 @@ def startGame(response: Response, userId: Optional[str] = Cookie(None)):
     if game.getGameStatus() != GameStatus.WAITING_FOR_PLAYER_TO_START:
         response.status_code = status.HTTP_403_FORBIDDEN
         return {"message": "game already started", "success": False}
+
+    game.loopAfkCheckRunning = False
 
     Logger.log(f"GameStatus {game.getGameStatus()}", Prefix.API)
 
@@ -180,12 +184,13 @@ def surrenderGame(response: Response, userId: Optional[str] = Cookie(None)):
     Logger.log(f"Game surrendered: {userId}", Prefix.API)
     return {"message": "game surrendered successfully", "success": True}
 
+# return success = True if user is not authorized
 @app.get("/gameover", status_code=status.HTTP_200_OK)
 def isGameOver(response: Response, userId: Optional[str] = Cookie(None)):
     if not userId:
         Logger.log(f"Game Over request from {userId}: UNAUTHORIZED", Prefix.API)
         response.status_code = status.HTTP_401_UNAUTHORIZED
-        return {"message": "userId cookie not set", "success": False}
+        return {"message": "userId cookie not set", "success": True}
 
     if not game.queue.getCurrentPlayer() == userId:
         response.status_code = status.HTTP_200_OK
