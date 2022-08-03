@@ -8,6 +8,7 @@ from Playground import Playground
 from Player import Player
 from enums.PlaygroundTile import PlaygroundTile
 from enums.GameStatus import GameStatus
+from typing import List
 import datetime
 
 import threading
@@ -18,21 +19,44 @@ import numpy as np
 class Display(SampleBase):
 
     def __init__(self, *args, **kwargs):
+        """
+        Constructur based on SampleBase.py.
+        """
+
         super(Display, self).__init__(self, *args, **kwargs)
         self.playground = Playground(20, 20)
         self.player = Player(self.playground)
         self._running = True
 
-    def terminate(self):
+    def terminate(self) -> None:
+        """
+        Function to stop the display loop
+        """
+
         self._running = False
 
-    def setPlayground(self, playground: Playground):
+    def setPlayground(self, playground: Playground) -> None:
+        """
+        Function to set the playground.
+        """
+
         self.playground = playground
 
-    def setPlayer(self, player: Player):
+    def setPlayer(self, player: Player) -> None:
+        """
+        Function to set the player.
+        """
+
         self.player = player
 
-    def getPlayground(self):
+    def getPlayground(self) -> List[List[PlaygroundTile]]:
+        """
+        Function to get the playground matrix
+
+        :rtype: 2d list
+        :returns: playground matrix
+        """
+
         matrix = self.playground.getPlaygroundMatrix()
 
         """out = [None]*len(matrix)
@@ -46,7 +70,11 @@ class Display(SampleBase):
 
         return matrix
 
-    def run(self):
+    def run(self) -> None:
+        """
+        Function to display the game
+        """
+
         offset_canvas = self.matrix.CreateFrameCanvas()
         
         font = graphics.Font()
@@ -73,14 +101,22 @@ class Display(SampleBase):
             graphics.DrawText(offset_canvas, font, int(32 - (len("Game Over") * 5) / 2), 25, textColor, "Game Over!")
             offset_canvas = self.matrix.SwapOnVSync(offset_canvas)
 
-    def draw(self, offset_canvas):
+    def draw(self, offset_canvas) -> None:
+        """
+        Function to draw the playground
+        """
+
         matrix = self.getPlayground()
+
         offsetX = 32 - (int(len(self.getPlayground())) * 2) / 2
         offsetY = 20
+        
         offset_canvas.Clear()
+        
         font = graphics.Font()
         font.LoadFont("/home/pi/rpi_rgb_led_matrix/fonts/4x6.bdf")
         text_length = len("Score: " + str(self.player.getScore())) * 4
+        
         graphics.DrawText(
             offset_canvas,
             font,

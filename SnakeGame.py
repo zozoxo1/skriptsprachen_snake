@@ -69,6 +69,7 @@ class SnakeGame:
         """
         Function to start the game.
         Sets game status to RUNNING and sets new food location.
+        Starts game and display loops in new threads.
         """
 
         self.setGameStatus(GameStatus.RUNNING)
@@ -97,7 +98,11 @@ class SnakeGame:
         display.terminate()
         displayThread.join()
 
-    def loop(self):
+    def loop(self) -> None:
+        """
+        Game loop to move the player if the game is running.
+        """
+
         while self.getGameStatus() == GameStatus.RUNNING or self.getGameStatus() == GameStatus.PAUSED:
             time.sleep(0.2)
             
@@ -107,7 +112,12 @@ class SnakeGame:
                 if m:
                     self.performGameOverCheck()
 
-    def loopAfkCheck(self):
+    def loopAfkCheck(self) -> None:
+        """
+        Function to check if the player is afk.
+        If this is the case, surrender the game.
+        """
+
         self.loopAfkCheckRunning = True
         self.lastMove = datetime.now()
 
