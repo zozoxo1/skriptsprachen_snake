@@ -2,17 +2,16 @@
 Snake
 
 ### In Progress
-- [ ] Game Loop in SnakeGame klasse packen
-- [ ] text Klasse funktionell machen
+- [x] Game Loop in SnakeGame klasse packen
 - [ ] Klassen ausräumen
   - [ ] Player move methode
   - [ ] funktionen private machen wenn sie nicht gebraucht werden
 - [ ] how to use als kommentar für funktionen
 - [x] status setzen auf WAITING_FOR_PLAYER_TO_START wenn in queue
-- [ ] score einbauen -> return success True und score value
+- [x] score einbauen -> return success True und score value
 
-- [ ] game beenden wenn spieler mehr als 20 sekunden kein input mehr macht im backend
-- [ ] wenn waiting for player to start 20 sekunden lang ist dann game beenden
+- [x] game beenden wenn spieler mehr als 20 sekunden kein input mehr macht im backend
+- [x] wenn waiting for player to start 20 sekunden lang ist dann game beenden
 - [x] darstellung auf raspy
 - [ ] klassen und imports aussoriteren
 
@@ -23,6 +22,6 @@ Snake
 - [x] controller check if player is current player
 - [x] weiterleiten auf score seite wenn game over ist oder current player != userId
 - [x] is game over funktionell machen
-- [ ] steuerung anpassen
+- [x] steuerung anpassen
 
 - [ ] admin seite für game auswahl
