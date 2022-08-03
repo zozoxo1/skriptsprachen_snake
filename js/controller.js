@@ -18,7 +18,7 @@ function orientationEvent(event)
     let beta = event.beta;
     let gamma = event.gamma;
 
-    if(gamma < -20 && canMoveLeft) {
+    if(gamma < -18 && canMoveLeft) {
         canMoveLeft = false;
 
         resetButton();
@@ -33,7 +33,7 @@ function orientationEvent(event)
         }, moveTimeout);
     }
 
-    if(gamma > 20 && canMoveRight) {
+    if(gamma > 18 && canMoveRight) {
         canMoveRight = false;
 
         resetButton();
@@ -48,7 +48,7 @@ function orientationEvent(event)
         }, moveTimeout);
     }
 
-    if(beta > 40 && canMoveDown) {
+    if(beta > 30 && canMoveDown) {
         canMoveDown = false;
 
         resetButton();
@@ -63,7 +63,7 @@ function orientationEvent(event)
         }, moveTimeout);
     }
 
-    if(beta < -15 && canMoveUp) {
+    if(beta < -10 && canMoveUp) {
         canMoveUp = false;
 
         resetButton();
