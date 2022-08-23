@@ -1,6 +1,9 @@
-.idea/
+.idea
 venv
-__pycache__/
+__pycache__
 *.egg-info
 build/
 dist
+TODO.md
+venv
+*.egg-info

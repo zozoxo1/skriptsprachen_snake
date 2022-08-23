@@ -14,8 +14,10 @@ const API_ENDPOINTS = {
     "PUT_QUEUE_LEAVE": API_URL + "queue/leave",
     "GET_QUEUE_LENGTH": API_URL + "queue/length",
     "GET_CURRENT_PLAYER": API_URL + "current_user",
+    "GET_GAME_OVER": API_URL + "gameover",
+    "GET_SCORE": API_URL + "score",
 }
 
-const REDIRECT_CONTROLLER = window.location.origin + "/static/controller.html";
-const REDIRECT_GAMEOVER = window.location.origin + "/static/gameover.html";
-const REDIRECT_MENU = window.location.origin + "/static/index.html";
+const REDIRECT_CONTROLLER = window.location.origin + "/snake/controller.html";
+const REDIRECT_GAMEOVER = window.location.origin + "/snake/gameover.html";
+const REDIRECT_MENU = window.location.origin + "/snake/index.html";
