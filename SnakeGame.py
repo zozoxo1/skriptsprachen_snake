@@ -4,6 +4,12 @@ from Playground import Playground
 from Queue import Queue
 from enums.GameStatus import GameStatus
 from enums.Message import Message
+from Display import Display
+from multiprocessing import Process
+import threading
+import os
+import time
+from datetime import datetime, timedelta
 
 
 class SnakeGame:
@@ -23,8 +29,12 @@ class SnakeGame:
         self.playground: Playground = Playground(self.height, self.width)
         self.player: Player = Player(self.playground)
         self.queue: Queue = Queue(self)
+        self.scores = {} # Score dict -> username: score
+        self.loopAfkCheckRunning = False
+        self.lastMove = datetime.now()
 
         self.__gameStatus: GameStatus = GameStatus.WAITING_FOR_NEXT_PLAYER
+
 
     def setGameStatus(self, gameStatus: GameStatus) -> None:
         """
@@ -35,6 +45,15 @@ class SnakeGame:
 
         self.__gameStatus: GameStatus = gameStatus
         Logger.log(f"Game Status wurde geändert: {gameStatus.name}")
+
+    def addScore(self, userId: str, score: int) -> None:
+        self.scores[userId] = score
+
+    def getScore(self, userId: str) -> int:
+        if userId in self.scores:
+            return self.scores[userId]
+        
+        return -1
 
     def getGameStatus(self) -> GameStatus:
         """
@@ -50,10 +69,62 @@ class SnakeGame:
         """
         Function to start the game.
         Sets game status to RUNNING and sets new food location.
+        Starts game and display loops in new threads.
         """
 
         self.setGameStatus(GameStatus.RUNNING)
         self.playground.setRandomFood()
+
+        display = Display()
+        display.setPlayground(self.playground)
+        display.setPlayer(self.player)
+
+        displayThread = threading.Thread(name="Display", target=display.process)
+        displayThread.daemon = True
+
+        gameLoopThread = threading.Thread(name="Gameloop", target=self.loop)
+        gameLoopThread.daemon = True
+
+        gameLoopAfkThread = threading.Thread(name="GameloopAfk", target=self.loopAfkCheck)
+        gameLoopAfkThread.daemon = True
+        
+        gameLoopThread.start()
+        displayThread.start()
+        gameLoopAfkThread.start()
+        
+        gameLoopThread.join()
+        self.loopAfkCheckRunning = False
+        gameLoopAfkThread.join()
+        display.terminate()
+        displayThread.join()
+
+    def loop(self) -> None:
+        """
+        Game loop to move the player if the game is running.
+        """
+
+        while self.getGameStatus() == GameStatus.RUNNING or self.getGameStatus() == GameStatus.PAUSED:
+            time.sleep(0.2)
+            
+            if self.isGameRunning():
+                m = self.player.move()
+
+                if m:
+                    self.performGameOverCheck()
+
+    def loopAfkCheck(self) -> None:
+        """
+        Function to check if the player is afk.
+        If this is the case, surrender the game.
+        """
+
+        self.loopAfkCheckRunning = True
+        self.lastMove = datetime.now()
+
+        while self.loopAfkCheckRunning:
+            if self.lastMove < datetime.now() - timedelta(seconds=20):
+                self.loopAfkCheckRunning = False
+                self.surrenderGame()
 
     def pauseGame(self) -> None:
         """
@@ -116,15 +187,17 @@ class SnakeGame:
         :rtype: bool
         """
 
+        self.addScore(self.queue.getCurrentPlayer(), self.player.score)
+        self.queue.removeCurrentPlayer()
         self.setGameStatus(GameStatus.GAME_OVER)
         Logger.log("Game Over!")
+        self.resetGame()
         self.queue.nextPlayer()
 
         return win
 
     def surrenderGame(self) -> None:
         self.gameOver(False, Message.SURRENDER)
-        self.resetGame()
 
     def performGameOverCheck(self) -> None:
         """
@@ -143,15 +216,9 @@ class SnakeGame:
 
         if self.player.hasEatenSelf():
             self.gameOver(False, Message.EATEN_SELF)
-            self.resetGame()
-            self.startGame()
 
         if self.player.hasHitWall():
             self.gameOver(False, Message.HIT_WALL)
-            self.resetGame()
-            self.startGame()
 
         if self.playground.isPlaygroundFull():
             self.gameOver(True, Message.PLAYGROUND_FULL)
-            self.resetGame()
-            self.startGame()

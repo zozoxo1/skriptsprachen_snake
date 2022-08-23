@@ -33,9 +33,18 @@ export default class ControllerHandler {
             });
     }
 
-    isGameOver() {
-        // checken ob game vorbei ist und / oder ob spieler nicht berechtigt ist gerade zu spielen
-        return false;
+    async isGameOver() {
+        let gameOver = await fetch(API_ENDPOINTS["GET_GAME_OVER"], {method: "GET"})
+            .then(response => response.json())
+            .then(data => {
+                return data["success"];
+            })
+            .catch(error => {
+                console.log(error);
+                return False;
+            });
+
+        return gameOver;
     }
 
     moveRight() {

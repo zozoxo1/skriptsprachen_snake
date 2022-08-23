@@ -4,6 +4,7 @@ from Logger import Logger
 import SnakeGame
 from enums.GameStatus import GameStatus
 from enums.Prefix import Prefix
+import threading
 
 
 class Queue:
@@ -31,10 +32,18 @@ class Queue:
 
         if len(self.__queue) <= 0:
             self.__currentPlayer: str = ""
+            Logger.log("Set current player to none", Prefix.QUEUE)
             return False
 
         self.__currentPlayer: str = self.__queue.pop(0)
         self.game.setGameStatus(GameStatus.WAITING_FOR_PLAYER_TO_START)
+        Logger.log(f"Set current player to {self.__currentPlayer}", Prefix.QUEUE)
+
+        gameLoopAfkThread = threading.Thread(name="GameloopAfkFromQueue", target=self.game.loopAfkCheck)
+        gameLoopAfkThread.daemon = True
+
+        gameLoopAfkThread.start()
+        gameLoopAfkThread.join()
 
         return True
 
@@ -74,11 +83,20 @@ class Queue:
             self.__currentPlayer: str = userId
             self.game.setGameStatus(GameStatus.WAITING_FOR_PLAYER_TO_START)
             Logger.log(f"Next Player set: {userId}", Prefix.QUEUE)
+
+            gameLoopAfkThread = threading.Thread(name="GameloopAfkFromQueue", target=self.game.loopAfkCheck)
+            gameLoopAfkThread.daemon = True
+
+            gameLoopAfkThread.start()
+            gameLoopAfkThread.join()
         else:
             self.__queue.append(userId)
             Logger.log(f"User appended to Queue: {userId}", Prefix.QUEUE)
 
         return True
+
+    def removeCurrentPlayer(self):
+        self.__currentPlayer = ""
 
     def removePlayerFromQueue(self, userId: str) -> bool:
         """

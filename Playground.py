@@ -20,9 +20,6 @@ class Playground:
         self.__playground: List[List[PlaygroundTile]] = [[PlaygroundTile.VOID for _ in range(self.width)] for _ in range(self.height)]
         self.__currentFoodPosition: tuple = (-1, -1)  # (height, width)
 
-        for i in range(3, self.width - 1):
-            self.setTile(2, i, PlaygroundTile.WALL)
-
     def resetPlayground(self) -> None:
         """
         Function to reset the playground.

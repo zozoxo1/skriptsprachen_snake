@@ -1,4 +1,7 @@
 from typing import Optional
+import sys
+
+sys.path.append('../snake')
 
 from fastapi import FastAPI, Cookie, status, Response
 from enums.Direction import Direction
@@ -6,18 +9,22 @@ from enums.GameStatus import GameStatus
 from enums.Prefix import Prefix
 from Logger import Logger
 from SnakeGame import SnakeGame
+from Display import Display
+import threading
+import uvicorn
+from datetime import datetime
 
 app = FastAPI()
-game = SnakeGame(20, 20)
-game.queue.addPlayerToQueue("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-Logger.log(game.getGameStatus().value)
+game = SnakeGame(15, 15)
 
 """
+Hint:
+To use this api, you have to set drop_previlege to False!
+
 API Methoden:
 
 getScore -> nur wenn man gerade erst gespielt hat
 """
-
 
 @app.put("/move/{direction}", status_code=status.HTTP_200_OK)
 def movePlayer(direction: str, response: Response, userId: Optional[str] = Cookie(None)):
@@ -33,6 +40,7 @@ def movePlayer(direction: str, response: Response, userId: Optional[str] = Cooki
 
     directionValues = [member.value for member in Direction]
     direction = direction.upper()
+    game.lastMove = datetime.now()
 
     Logger.log(f"Movement from {userId}: {direction}", Prefix.API)
 
@@ -59,7 +67,7 @@ def startGame(response: Response, userId: Optional[str] = Cookie(None)):
         response.status_code = status.HTTP_401_UNAUTHORIZED
         return {"message": "userId cookie not set", "success": False}
 
-    if userId != game.queue.getCurrentPlayer():
+    if userId != game.queue.getCurrentPlayer() or game.queue.getCurrentPlayer() == "":
         Logger.log(f"Game start from {userId}: NOT THE CURRENT USER", Prefix.API)
         response.status_code = status.HTTP_425_TOO_EARLY
         return {"message": "current users differs from userId", "success": False}
@@ -68,8 +76,13 @@ def startGame(response: Response, userId: Optional[str] = Cookie(None)):
         response.status_code = status.HTTP_403_FORBIDDEN
         return {"message": "game already started", "success": False}
 
-    game.startGame()
+    game.loopAfkCheckRunning = False
+
+    Logger.log(f"GameStatus {game.getGameStatus()}", Prefix.API)
+
     Logger.log(f"Game start from {userId}: STARTED", Prefix.API)
+
+    game.startGame()
 
     return {"message": f"game started successfully", "success": True}
 
@@ -134,7 +147,8 @@ def queueLeave(response: Response, userId: Optional[str] = Cookie(None)):
 
 @app.get("/queue/length", status_code=status.HTTP_200_OK)
 def queueLeave(response: Response):
-    return {"message": f"Queue length: {len(game.queue.getQueue())}", "len": len(game.queue.getQueue()), "success": True}
+    queue_length = len(game.queue.getQueue()) + 1 if game.queue.getCurrentPlayer() != "" else len(game.queue.getQueue())
+    return {"message": f"Queue length: {queue_length}", "len": queue_length, "success": True}
 
 
 @app.get("/current_user", status_code=status.HTTP_200_OK)
@@ -155,7 +169,7 @@ def currentUser(response: Response, userId: Optional[str] = Cookie(None)):
 
 
 @app.delete("/surrender", status_code=status.HTTP_200_OK)
-def currentUser(response: Response, userId: Optional[str] = Cookie(None)):
+def surrenderGame(response: Response, userId: Optional[str] = Cookie(None)):
     if not userId:
         Logger.log(f"Surrender request from {userId}: UNAUTHORIZED", Prefix.API)
         response.status_code = status.HTTP_401_UNAUTHORIZED
@@ -170,3 +184,45 @@ def currentUser(response: Response, userId: Optional[str] = Cookie(None)):
     Logger.log(f"Game surrendered: {userId}", Prefix.API)
     return {"message": "game surrendered successfully", "success": True}
 
+# return success = True if user is not authorized
+@app.get("/gameover", status_code=status.HTTP_200_OK)
+def isGameOver(response: Response, userId: Optional[str] = Cookie(None)):
+    if not userId:
+        Logger.log(f"Game Over request from {userId}: UNAUTHORIZED", Prefix.API)
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return {"message": "userId cookie not set", "success": True}
+
+    if not game.queue.getCurrentPlayer() == userId:
+        response.status_code = status.HTTP_200_OK
+        return {"message": "current users differs from userId", "success": True}
+
+    response.status_code = status.HTTP_425_TOO_EARLY
+    return {"message": "no action", "success": False}
+
+
+@app.get("/score", status_code=status.HTTP_200_OK)
+def getScore(response: Response, userId: Optional[str] = Cookie(None)):
+    if not userId:
+        Logger.log(f"Score request from {userId}: UNAUTHORIZED", Prefix.API)
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return {"message": "userId cookie not set", "success": False}
+
+    score = game.getScore(userId)
+
+    if score == -1:
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return {"message": "no score available", "score": 0, "success": False}
+
+    return {f"message": "Score: {score}", "score": score, "success": True}
+
+
+@app.get('/threads')
+def getThreads():
+    l = []
+    for thread in threading.enumerate(): 
+        print(thread.name)
+        l.append(thread.name)
+    return l
+
+if __name__ == "__main__":
+    uvicorn.run("app:app", port=80, host="::", reload=True, debug=True, log_level="info", workers=1)
