@@ -224,5 +224,9 @@ def getThreads():
         l.append(thread.name)
     return l
 
+@app.on_event("shutdown")
+def shutdown_event():
+    game.surrenderGame()
+
 if __name__ == "__main__":
     uvicorn.run("app:app", port=80, host="::", reload=True, debug=True, log_level="info", workers=1)
